@@ -1,0 +1,6 @@
+[submodule "Delta-Frontend"]
+	path = Delta-Frontend
+	url = https://github.com/ERICKJLLO/Delta-Frontend.git
+[submodule "Delta-Backend"]
+	path = Delta-Backend
+	url = https://github.com/ERICKJLLO/Delta-Backend.git
