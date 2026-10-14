@@ -1,0 +1,21 @@
+﻿services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: delta_db
+      POSTGRES_USER: delta_user
+      POSTGRES_PASSWORD: delta_local_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - delta_postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U delta_user -d delta_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  delta_postgres_data:
