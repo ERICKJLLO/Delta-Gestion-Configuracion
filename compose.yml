@@ -17,5 +17,32 @@
       timeout: 5s
       retries: 10
 
+  backend:
+    build:
+      context: ./Delta-Backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://delta_user:delta_local_dev_password@db:5432/delta_db
+      JWT_SECRET: ${JWT_SECRET:?Configura JWT_SECRET en el archivo .env}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build:
+      context: ./Delta-Frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
 volumes:
   delta_postgres_data:
