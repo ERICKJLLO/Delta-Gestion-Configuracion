@@ -12,3 +12,7 @@ coverage/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Resultados de Playwright
+/test-results/
+/playwright-report/
