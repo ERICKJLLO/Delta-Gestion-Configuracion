@@ -1,0 +1,74 @@
+﻿name: CI - Delta
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-tests:
+    name: Backend - Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio y submodulos
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Delta-Backend/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: Delta-Backend
+        run: npm ci
+
+      - name: Ejecutar pruebas
+        working-directory: Delta-Backend
+        run: npm test
+
+  frontend-checks:
+    name: Frontend - Lint, Build y E2E
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio y submodulos
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: Delta-Frontend/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: Delta-Frontend
+        run: npm ci
+
+      - name: Verificar lint
+        working-directory: Delta-Frontend
+        run: npm run lint
+
+      - name: Compilar frontend
+        working-directory: Delta-Frontend
+        run: npm run build
+
+      - name: Instalar navegador de Playwright
+        working-directory: Delta-Frontend
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar pruebas E2E
+        working-directory: Delta-Frontend
+        run: npm run test:e2e
