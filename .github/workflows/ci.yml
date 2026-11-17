@@ -36,6 +36,8 @@ jobs:
         working-directory: Delta-Backend
         run: npm test
 
+      - name: DEMO - Prueba fallida intencional
+        run: node -e "require('node:assert/strict').equal(1, 2, 'Fallo intencional para demostrar CI')"
   frontend-checks:
     name: Frontend - Lint, Build y E2E
     runs-on: ubuntu-latest
@@ -122,3 +124,4 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/delta-frontend:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/delta-frontend:sha-${{ github.sha }}
+
