@@ -27,6 +27,8 @@ El frontend y el backend se mantienen como submódulos Git:
 - `database/init.sql`: script inicial para crear las tablas de la base de
   datos.
 - `compose.yml`: configuración para ejecutar todos los servicios con Docker.
+- `k8s/`: manifiestos declarativos para desplegar todos los servicios en
+  Kubernetes (Minikube).
 
 ## Requisitos
 
@@ -164,6 +166,30 @@ crear `Delta-Frontend/.env` con:
 ```env
 VITE_API_URL=http://localhost:3001/api
 ```
+
+## Opción 3: despliegue en Kubernetes (Minikube)
+
+Los manifiestos declarativos (`Namespace`, `Secret`, `ConfigMap`, `PVC`,
+`Deployments` y `Services`) se encuentran en [`k8s/`](./k8s/README.md).
+
+1. Iniciar el clúster local y crear el archivo de secretos a partir de la
+   plantilla:
+
+   ```bash
+   minikube start --driver=docker
+   cp k8s/01-secret.yaml.example k8s/01-secret.yaml
+   ```
+
+2. Aplicar los manifiestos y abrir la aplicación:
+
+   ```bash
+   kubectl apply -f k8s/
+   kubectl get pods,svc,pvc -n delta
+   minikube service frontend -n delta
+   ```
+
+Consulta la guía completa de despliegue, construcción en Mac (ARM64) y comandos
+de diagnóstico en [`k8s/README.md`](./k8s/README.md).
 
 ## API y documentación
 
